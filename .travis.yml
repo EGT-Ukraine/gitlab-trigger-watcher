@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - 1.11.x
+
+script:
+  - make test build
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: gitlab-trigger-watcher
+  skip_cleanup: true
+  on:
+    tags: true
