@@ -6,7 +6,7 @@ Application to check Gitlab trigger's pipeline status
 ### Build and run
 ```bash
 make build
-./gitlab-trigger-watcher -h
+./gtw -h
 ```
 
 options:
@@ -23,5 +23,5 @@ options:
 ### Run:
 
 ```bash
-./gitlab-trigger-watcher --privateToken ${PRIVATE_TOKEN} --token ${TOKEN} --host gitlab.egt.com --projectID 123 run
+./gtw --privateToken ${PRIVATE_TOKEN} --token ${TOKEN} --host gitlab.egt.com --projectID 123 run
 ```

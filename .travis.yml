@@ -4,13 +4,13 @@ go:
   - 1.11.x
 
 script:
-  - make test build
+  - make all
 
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
-  file: gitlab-trigger-watcher
+  file: gtw-*
   skip_cleanup: true
   on:
     tags: true
