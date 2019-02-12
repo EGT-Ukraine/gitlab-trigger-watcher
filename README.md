@@ -1,4 +1,4 @@
-gitlab-trigger-watcher
+gitlab-trigger-watcher [![Build Status](https://travis-ci.org/EGT-Ukraine/gitlab-trigger-watcher.svg?branch=master)](https://travis-ci.org/EGT-Ukraine/gitlab-trigger-watcher)
 ---
 
 Application to check Gitlab trigger's pipeline status
