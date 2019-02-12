@@ -60,7 +60,7 @@ func New(tlsInsecureSkipVerify bool, schema Schema, host, privateToken, token, r
 	return &Trigger{client: client, schema: schema, host: host, privateToken: privateToken, token: token, ref: ref, projectID: projectID, variables: variables}
 }
 
-func (p Trigger) RunPipeline() (*models.CreatePipeline, error) {
+func (p Trigger) RunPipeline() (*models.CreatePipelineResponse, error) {
 	tpl, err := p.createPipelineTpl()
 	if err != nil {
 		return nil, errors.Wrap(err, "run pipeline failed")
@@ -95,7 +95,7 @@ func (p Trigger) RunPipeline() (*models.CreatePipeline, error) {
 	}
 	defer resp.Body.Close()
 
-	createPipelineModel := new(models.CreatePipeline)
+	createPipelineModel := new(models.CreatePipelineResponse)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, "read response data failed on running the pipeline request")
@@ -112,7 +112,7 @@ func (p Trigger) RunPipeline() (*models.CreatePipeline, error) {
 	return createPipelineModel, nil
 }
 
-func (p Trigger) PollForCompletion(pipelineID int64) (*models.PipelineStatus, error) {
+func (p Trigger) PollForCompletion(pipelineID int64) (*models.PipelineStatusResponse, error) {
 	tpl, err := p.pollPipelineTpl()
 	if err != nil {
 		return nil, errors.Wrap(err, "poll pipeline failed")
@@ -142,7 +142,7 @@ func (p Trigger) PollForCompletion(pipelineID int64) (*models.PipelineStatus, er
 	}
 	defer resp.Body.Close()
 
-	var pipelineStatusesModel []*models.PipelineStatus
+	var pipelineStatusesModel []*models.PipelineStatusResponse
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, "read response data failed on polling the pipeline request")
