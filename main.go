@@ -49,10 +49,12 @@ func main() {
 			},
 			cli.StringFlag{
 				Name:  "privateToken",
+				Usage: "your personal private token",
 				Value: "",
 			},
 			cli.StringFlag{
 				Name:  "token",
+				Usage: "project token",
 				Value: "",
 			},
 			cli.StringSliceFlag{
