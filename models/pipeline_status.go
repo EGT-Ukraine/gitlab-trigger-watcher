@@ -1,18 +1,18 @@
 package models
 
-type PipelineStatusID string
+type PipelineStatus string
 
 const (
-	Running PipelineStatusID = "running"
-	Pending                  = "pending"
-	Failed                   = "failed"
-	Success                  = "success"
+	Running PipelineStatus = "running"
+	Pending                = "pending"
+	Failed                 = "failed"
+	Success                = "success"
 )
 
-type PipelineStatus struct {
-	ID     int64            `json:"id"`
-	Ref    string           `json:"ref"`
-	Sha    string           `json:"sha"`
-	Status PipelineStatusID `json:"status"`
-	WebURL string           `json:"web_url"`
+type PipelineStatusResponse struct {
+	ID     int64          `json:"id"`
+	Ref    string         `json:"ref"`
+	Sha    string         `json:"sha"`
+	Status PipelineStatus `json:"status"`
+	WebURL string         `json:"web_url"`
 }

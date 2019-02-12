@@ -1,6 +1,6 @@
 package models
 
-type CreatePipeline struct {
+type CreatePipelineResponse struct {
 	BeforeSha   string      `json:"before_sha"`
 	CommittedAt interface{} `json:"committed_at"`
 	Coverage    interface{} `json:"coverage"`

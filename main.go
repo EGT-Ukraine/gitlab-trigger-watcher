@@ -94,6 +94,7 @@ func main() {
 						os.Exit(1)
 					}()
 
+					var previousPipelineStatus models.PipelineStatus
 					for {
 						triggerCompletionResp, err := trigger.PollForCompletion(triggerRunResp.ID)
 						if err != nil {
@@ -102,7 +103,10 @@ func main() {
 
 						switch triggerCompletionResp.Status {
 						case models.Pending, models.Running:
-							log.Printf("pipeline status: %s\n", triggerCompletionResp.Status)
+							if previousPipelineStatus != triggerCompletionResp.Status {
+								log.Printf("pipeline status: %s\n", triggerCompletionResp.Status)
+								previousPipelineStatus = triggerCompletionResp.Status
+							}
 						case models.Failed:
 							log.Fatalln("pipeline failed!")
 						case models.Success:
