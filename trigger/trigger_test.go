@@ -1,4 +1,4 @@
-package pipeline
+package trigger
 
 import (
 	"net/url"
@@ -15,13 +15,11 @@ func Test_pipelineURL(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		p    *Pipeline
 		args args
 		want string
 	}{
 		{
 			name: "success with HTTPS",
-			p:    new(Pipeline),
 			args: struct {
 				schema    Schema
 				host      string
@@ -30,7 +28,6 @@ func Test_pipelineURL(t *testing.T) {
 			want: "https://gitlab.com/api/v4/projects/123/trigger/pipeline",
 		}, {
 			name: "success with HTTP and another host",
-			p:    new(Pipeline),
 			args: struct {
 				schema    Schema
 				host      string
@@ -40,10 +37,16 @@ func Test_pipelineURL(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		p := new(Trigger)
+		p.schema = tt.args.schema
+		p.host = tt.args.host
+		p.projectID = tt.args.projectID
+
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := tt.p.pipelineURL(tt.args.schema, tt.args.host, tt.args.projectID)
+			tpl, err := p.createPipelineTpl()
 			assert.Nil(t, err)
 
+			u, err := p.urlByTemplate(tpl)
 			assert.Nil(t, err)
 			assert.Equal(t, tt.want, u)
 		})
@@ -56,14 +59,12 @@ func TestPipeline_variables(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		p       *Pipeline
 		args    args
 		want    url.Values
 		wantErr bool
 	}{
 		{
 			name: "success",
-			p:    new(Pipeline),
 			args: struct {
 				variables []string
 			}{
@@ -82,7 +83,6 @@ func TestPipeline_variables(t *testing.T) {
 			},
 		}, {
 			name: "fail",
-			p:    new(Pipeline),
 			args: struct {
 				variables []string
 			}{
@@ -104,12 +104,12 @@ func TestPipeline_variables(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := Pipeline{}
+			p := &Trigger{variables: tt.args.variables}
 			if !tt.wantErr {
-				assert.Equal(t, p.variables(tt.args.variables), tt.want)
+				assert.Equal(t, p.urlVariables(), tt.want)
 				return
 			}
-			assert.NotEqual(t, p.variables(tt.args.variables), tt.want)
+			assert.NotEqual(t, p.urlVariables(), tt.want)
 		})
 	}
 }
