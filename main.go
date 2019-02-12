@@ -8,17 +8,18 @@ import (
 	"time"
 
 	"github.com/EGT-Ukraine/gitlab-trigger-watcher/models"
-
 	"github.com/EGT-Ukraine/gitlab-trigger-watcher/trigger"
 	"github.com/urfave/cli"
 )
 
 const (
-	waitTimeout      = 10 * time.Minute
+	lifecycleTimeout = 10 * time.Minute
 	thresholdTimeout = 2 * time.Second
 )
 
 func main() {
+	go shutdownSignalReceiver()
+
 	app := cli.App{
 		Flags: []cli.Flag{
 			cli.BoolFlag{
@@ -89,9 +90,8 @@ func main() {
 					}
 
 					go func() {
-						shutdown()
-						time.Sleep(waitTimeout)
-						os.Exit(1)
+						time.Sleep(lifecycleTimeout)
+						log.Fatalf("lifecycle time(%v) has been expired", lifecycleTimeout)
 					}()
 
 					var previousPipelineStatus models.PipelineStatus
@@ -129,7 +129,7 @@ func main() {
 	}
 }
 
-func shutdown() {
+func shutdownSignalReceiver() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit

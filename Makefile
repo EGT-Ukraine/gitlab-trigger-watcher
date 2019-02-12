@@ -1,7 +1,7 @@
 
-.PHONY: all test build build-linux-amd64 build-osx-amd64 build-windows-amd64 build-win-386
+.PHONY: all test build build-linux-x86_64 build-linux-x86 build-osx-x86_64 build-osx-x86 build-win-x86_64 build-win-x86
 
-all: test build build-linux-amd64 build-osx-amd64 build-windows-amd64 build-win-386
+all: test build build-linux-x86_64 build-linux-x86 build-osx-x86_64 build-osx-x86 build-win-x86_64 build-win-x86
 
 test:
 	@echo "Running tests"
@@ -11,26 +11,26 @@ build:
 	@echo "Building"
 	@go build -o gtw
 
-build-linux-amd64:
-	@echo "Building linux-amd64 version"
-	@GOOS=linux GOARCH=amd64 go build -o gtw-linux-amd64
+build-linux-x86_64:
+	@echo "Building linux-x86_64 version"
+	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-linux-x86_64
 
-build-linux-386:
-	@echo "Building linux-386 version"
-	@GOOS=linux GOARCH=386 go build -o gtw-linux-386
+build-linux-x86:
+	@echo "Building linux-x86 version"
+	@GOOS=linux GOARCH=386 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-linux-x86
 
-build-osx-amd64:
-	@echo "Building osx-amd64 version"
-	@GOOS=darwin GOARCH=amd64 go build -o gtw-osx-amd64
+build-osx-x86_64:
+	@echo "Building osx-x86_64 version"
+	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-osx-x86_64
 
-build-osx-386:
-	@echo "Building osx-386 version"
-	@GOOS=darwin GOARCH=386 go build -o gtw-osx-386
+build-osx-x86:
+	@echo "Building osx-x86 version"
+	@GOOS=darwin GOARCH=386 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-osx-x86
 
-build-windows-amd64:
-	@echo "Building windows-amd64 version"
-	@GOOS=darwin GOARCH=amd64 go build -o gtw-win-amd64.exe
+build-win-x86_64:
+	@echo "Building win-x86_64 version"
+	@GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-win-x86_64.exe
 
-build-win-386:
-	@echo "Building win-386 version"
-	@GOOS=darwin GOARCH=386 go build -o gtw-win-386.exe
+build-win-x86:
+	@echo "Building win-x86 version"
+	@GOOS=darwin GOARCH=386 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo -o gtw-win-x86.exe
