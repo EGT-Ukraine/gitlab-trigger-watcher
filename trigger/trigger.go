@@ -186,7 +186,7 @@ func (p Trigger) schemaName(schema Schema) string {
 func (p Trigger) urlVariables() url.Values {
 	values := url.Values{}
 	for _, variable := range p.variables {
-		kv := strings.Split(variable, ":")
+		kv := strings.SplitN(variable, ":", 2)
 		if len(kv) == 2 {
 			values.Add(fmt.Sprintf("variables[%s]", kv[0]), kv[1])
 		}
