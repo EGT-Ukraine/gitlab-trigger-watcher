@@ -73,10 +73,10 @@ func (p Trigger) RunPipeline() (*models.CreatePipelineResponse, error) {
 
 	vars := p.urlVariables()
 	if p.token != "" {
-		vars.Add("token", p.token)
+		vars.Set("token", p.token)
 	}
 	if p.ref != "" {
-		vars.Add("ref", p.ref)
+		vars.Set("ref", p.ref)
 	}
 
 	req, err := http.NewRequest(http.MethodPost, u, strings.NewReader(vars.Encode()))
@@ -126,7 +126,7 @@ func (p Trigger) PollForCompletion(pipelineID int64) (*models.PipelineStatusResp
 	headers := p.defaultHeaders()
 	headers["PRIVATE-TOKEN"] = []string{p.privateToken}
 
-	req, err := http.NewRequest(http.MethodGet, u, strings.NewReader(p.urlVariables().Encode()))
+	req, err := http.NewRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "create request failed")
 	}
@@ -167,7 +167,7 @@ func (p Trigger) PollForCompletion(pipelineID int64) (*models.PipelineStatusResp
 
 func (p Trigger) defaultHeaders() map[string][]string {
 	return map[string][]string{
-		"Content-Type": {"multipart/form-data"},
+		"Content-Type": {"application/x-www-form-urlencoded"},
 	}
 }
 
@@ -188,7 +188,7 @@ func (p Trigger) urlVariables() url.Values {
 	for _, variable := range p.variables {
 		kv := strings.SplitN(variable, ":", 2)
 		if len(kv) == 2 {
-			values.Add(fmt.Sprintf("variables[%s]", kv[0]), kv[1])
+			values.Set(fmt.Sprintf("variables[%s]", kv[0]), kv[1])
 		}
 	}
 

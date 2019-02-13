@@ -18,10 +18,10 @@ options:
   * `--schema` - (optional. default: https) set http or https connection type;
   * `--ref` - (optional) branch for the project. (default: master);
   * `--urlPrefix` - (optional) if you are use some prefix for your Gitlab (final URL will be looked like: /prefix/api/v4/...);
-  * `--variables` - (optional) custom variables for the project (format example: `variable1:value,variable2:value`)
+  * `--variables` - (optional) custom variables for the project
   
 ### Run:
 
 ```bash
-./gtw --privateToken ${PRIVATE_TOKEN} --token ${TOKEN} --host gitlab.egt.com --projectID 123 run
+./gtw --privateToken ${PRIVATE_TOKEN} --token ${TOKEN} --host gitlab.egt.com --projectID 123 --variables KEY1:VALUE1 --variables KEY2:VALUE2 run
 ```
