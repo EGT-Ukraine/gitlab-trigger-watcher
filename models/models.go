@@ -3,10 +3,11 @@ package models
 type PipelineStatus string
 
 const (
-	Running PipelineStatus = "running"
-	Pending                = "pending"
-	Failed                 = "failed"
-	Success                = "success"
+	Running  PipelineStatus = "running"
+	Pending                 = "pending"
+	Failed                  = "failed"
+	Success                 = "success"
+	Canceled                = "canceled"
 )
 
 type CreatePipelineResponse struct {

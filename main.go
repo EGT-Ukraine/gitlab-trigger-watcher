@@ -109,6 +109,8 @@ func main() {
 							}
 						case models.Failed:
 							log.Fatalln("pipeline failed!")
+						case models.Canceled:
+							log.Fatalln("pipeline canceled!")
 						case models.Success:
 							log.Println("pipeline success!")
 							os.Exit(0)
