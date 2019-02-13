@@ -82,6 +82,24 @@ func TestPipeline_variables(t *testing.T) {
 				},
 			},
 		}, {
+			name: "success with double separator",
+			args: struct {
+				variables []string
+			}{
+				variables: []string{
+					"variable1:value1:prefix",
+					"variable2:value2:prefix",
+				},
+			},
+			want: map[string][]string{
+				"variables[variable1]": {
+					"value1:prefix",
+				},
+				"variables[variable2]": {
+					"value2:prefix",
+				},
+			},
+		}, {
 			name: "fail",
 			args: struct {
 				variables []string
@@ -106,10 +124,10 @@ func TestPipeline_variables(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			p := &Trigger{variables: tt.args.variables}
 			if !tt.wantErr {
-				assert.Equal(t, p.urlVariables(), tt.want)
+				assert.Equal(t, tt.want, p.urlVariables())
 				return
 			}
-			assert.NotEqual(t, p.urlVariables(), tt.want)
+			assert.NotEqual(t, tt.want, p.urlVariables())
 		})
 	}
 }
