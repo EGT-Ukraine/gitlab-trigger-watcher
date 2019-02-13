@@ -77,6 +77,7 @@ func main() {
 						ctx.GlobalBool("skipVerifyTLS"),
 						schema,
 						ctx.GlobalString("host"),
+						ctx.GlobalString("urlPrefix"),
 						ctx.GlobalString("privateToken"),
 						ctx.GlobalString("token"),
 						ctx.GlobalString("ref"),
@@ -88,6 +89,8 @@ func main() {
 					if err != nil {
 						log.Fatal(err)
 					}
+
+					log.Printf("trigger's job URL: %s", triggerRunResp.WebURL)
 
 					go func() {
 						time.Sleep(lifecycleTimeout)

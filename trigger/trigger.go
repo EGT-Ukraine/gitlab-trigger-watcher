@@ -34,14 +34,16 @@ var (
 )
 
 type Trigger struct {
-	client                         *http.Client
-	schema                         Schema
-	host, privateToken, token, ref string
-	projectID                      int
-	variables                      []string
+	client                                    *http.Client
+	schema                                    Schema
+	host, urlPrefix, privateToken, token, ref string
+	projectID                                 int
+	variables                                 []string
 }
 
-func New(tlsInsecureSkipVerify bool, schema Schema, host, privateToken, token, ref string, projectID int, variables []string) *Trigger {
+func New(tlsInsecureSkipVerify bool, schema Schema,
+	host, urlPrefix, privateToken, token, ref string, projectID int, variables []string) *Trigger {
+
 	httpTransport := &http.Transport{
 		DialContext: (&net.Dialer{
 			Timeout: httpClientTimeout,
@@ -57,7 +59,8 @@ func New(tlsInsecureSkipVerify bool, schema Schema, host, privateToken, token, r
 		Timeout:   httpClientTimeout,
 	}
 
-	return &Trigger{client: client, schema: schema, host: host, privateToken: privateToken, token: token, ref: ref, projectID: projectID, variables: variables}
+	return &Trigger{client: client, schema: schema, host: host, urlPrefix: urlPrefix,
+		privateToken: privateToken, token: token, ref: ref, projectID: projectID, variables: variables}
 }
 
 func (p Trigger) RunPipeline() (*models.CreatePipelineResponse, error) {
@@ -196,7 +199,7 @@ func (p Trigger) urlVariables() url.Values {
 }
 
 func (p Trigger) createPipelineTpl() (*template.Template, error) {
-	urlTpl := "{{.Schema}}://{{.Host}}/api/v4/projects/{{.ProjectID}}/trigger/pipeline"
+	urlTpl := "{{.Schema}}://{{.Host}}/{{.URLPrefix}}api/v4/projects/{{.ProjectID}}/trigger/pipeline"
 	tpl, err := template.New("tpl").Parse(urlTpl)
 	if err != nil {
 		return nil, errors.New("failed to parse pipeline url template")
@@ -206,7 +209,7 @@ func (p Trigger) createPipelineTpl() (*template.Template, error) {
 }
 
 func (p Trigger) pollPipelineTpl() (*template.Template, error) {
-	urlTpl := "{{.Schema}}://{{.Host}}/api/v4/projects/{{.ProjectID}}/pipelines"
+	urlTpl := "{{.Schema}}://{{.Host}}/{{.URLPrefix}}api/v4/projects/{{.ProjectID}}/pipelines"
 	tpl, err := template.New("tpl").Parse(urlTpl)
 	if err != nil {
 		return nil, errors.New("failed to parse pipeline url template")
@@ -220,12 +223,17 @@ func (p *Trigger) urlByTemplate(tpl *template.Template) (string, error) {
 		p.host = DefaultHost
 	}
 
+	if p.urlPrefix != "" && !strings.HasSuffix(p.urlPrefix, "/") {
+		p.urlPrefix = p.urlPrefix + "/"
+	}
+
 	var buf bytes.Buffer
 	if err := tpl.ExecuteTemplate(&buf, "tpl", &struct {
 		Schema    string
 		Host      string
 		ProjectID int
-	}{Schema: p.schemaName(p.schema), Host: p.host, ProjectID: p.projectID}); err != nil {
+		URLPrefix string
+	}{Schema: p.schemaName(p.schema), Host: p.host, URLPrefix: p.urlPrefix, ProjectID: p.projectID}); err != nil {
 		return "", errors.Wrap(err, "failed to execute pipeline url template")
 	}
 
